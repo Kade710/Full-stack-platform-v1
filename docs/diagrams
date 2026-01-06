@@ -1,1 +1,19 @@
+# Diagrams (V1)
+
+This folder contains early architecture diagrams and notes.
+
+## Architecture
+
+Browser
+  
+Nginx (8080)
+   serves static frontend
+   proxies /api → backend:3000
+Backend (Node.js)
+   Postgres (hits table)
+   Redis (cache hits_count)
+
+## Notes
+- This is the V1 learning/experiment version.
+- The production-ready improvements were implemented in V2.
 
