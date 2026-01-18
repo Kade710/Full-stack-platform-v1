@@ -1,6 +1,31 @@
 import http from "http";
 import { makePgClient } from "./db.js";
 import { makeRedisClient } from "./redis.js";
+import pkg from "pg";
+import { createClient } from "redis";
+
+const { Pool } = pkg;
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+async function waitForDb(retries = 10) {
+  while (retries > 0) {
+    try {
+      await pool.query("SELECT 1");
+      console.log("Database connected");
+      return;
+    } catch (err) {
+      retries--;
+      console.log("Waiting for database...");
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+  throw new Error("Database not reachable");
+}
+
+await waitForDb();
 
 const PORT = Number(process.env.PORT || 3000);
 const DATABASE_URL = process.env.DATABASE_URL;
